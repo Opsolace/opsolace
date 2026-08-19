@@ -1,0 +1,7 @@
+import { ChevronRight } from "lucide-react";
+import { services } from "@/lib/site-data";
+import { SectionLabel } from "@/components/ui/section-label";
+
+export function ServicesSection() {
+  return <section id="services" className="px-6 py-28 lg:px-[max(24px,calc((100vw-1240px)/2))] lg:py-36"><div className="grid lg:grid-cols-2"><SectionLabel>What we do</SectionLabel><div className="hidden lg:block" /><h2 className="text-[clamp(44px,5.2vw,76px)] font-medium leading-[.98] tracking-[-.065em]">Make work move<br /><em>better.</em></h2><p className="mt-6 max-w-[260px] text-sm leading-[1.6] text-muted lg:mt-auto">Practical systems for businesses ready to leave operational friction behind.</p></div><div className="mt-16 grid gap-3 sm:grid-cols-2 lg:mt-24 lg:grid-cols-4">{services.map(({ icon: Icon, number, title, text }) => <article className="group relative min-h-[280px] border-t border-navy p-5 transition duration-300 hover:-translate-y-1 hover:bg-white" key={number}><div className="flex justify-between text-emerald"><Icon size={21} strokeWidth={1.5} /><span className="text-[11px] text-muted">{number}</span></div><h3 className="mt-14 text-[21px] font-medium tracking-[-.04em]">{title}</h3><p className="mt-3 text-[13px] leading-[1.6] text-muted">{text}</p><ChevronRight className="absolute bottom-5 right-5 text-emerald transition-transform group-hover:translate-x-1" size={20} aria-hidden="true" /></article>)}</div></section>;
+}

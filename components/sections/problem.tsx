@@ -1,0 +1,6 @@
+import { problemPoints } from "@/lib/site-data";
+import { SectionLabel } from "@/components/ui/section-label";
+
+export function ProblemSection() {
+  return <section id="about" className="grid gap-12 px-6 py-28 lg:grid-cols-[1.1fr_.9fr] lg:gap-[12%] lg:px-[max(24px,calc((100vw-1240px)/2))] lg:py-40"><div><SectionLabel>The weight of growth</SectionLabel><h2 className="max-w-[620px] text-[clamp(44px,5.2vw,76px)] font-medium leading-[.98] tracking-[-.065em]">Your business shouldn&apos;t depend on <em>workarounds.</em></h2></div><div className="pt-2 text-base leading-[1.6] text-muted lg:pt-[72px]"><p>As companies grow, the way work gets done can quietly become harder to hold together.</p><div className="my-9 border-t border-line">{problemPoints.map((item) => <span className="block border-b border-line py-3 text-[13px] text-navy before:mr-4 before:text-emerald before:content-['↳']" key={item}>{item}</span>)}</div><p className="max-w-[340px]">We help make those systems work better, without losing what makes your business yours.</p></div></section>;
+}
