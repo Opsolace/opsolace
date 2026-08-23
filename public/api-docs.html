@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Opsolace Contact API - Reference</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css" />
+    <style>
+      :root {
+        --navy: #1f2949;
+        --emerald: #23a875;
+        --mint: #dff4e9;
+        --paper: #f5f7f3;
+      }
+      body { margin: 0; background: var(--paper); }
+      .topbar-custom {
+        background: var(--navy);
+        color: #fff;
+        padding: 22px 28px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .topbar-custom h1 {
+        margin: 0;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .topbar-custom p { margin: 8px 0 0; font-size: 12px; color: var(--mint); }
+      .topbar-custom code { color: #fff; }
+      .swagger-ui .topbar { display: none; }
+      .swagger-ui .info { margin: 28px 0; }
+      .swagger-ui .btn.execute { background: var(--emerald); border-color: var(--emerald); }
+      .swagger-ui .opblock.opblock-post .opblock-summary-method { background: var(--emerald); }
+      .swagger-ui .opblock.opblock-post { border-color: var(--emerald); background: rgba(35, 168, 117, 0.05); }
+      #swagger-ui { max-width: 1100px; margin: 0 auto; padding: 0 16px 64px; }
+    </style>
+  </head>
+  <body>
+    <header class="topbar-custom">
+      <h1>Opsolace - Contact API</h1>
+      <p>
+        Use <strong>Try it out</strong> to call the endpoint on this origin. Requests are limited
+        to 5 per IP per 10 minutes; restart the dev server to reset the counter.
+      </p>
+    </header>
+    <div id="swagger-ui"></div>
+    <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js" crossorigin></script>
+    <script>
+      window.onload = function () {
+        window.ui = SwaggerUIBundle({
+          url: "/openapi.json",
+          dom_id: "#swagger-ui",
+          deepLinking: true,
+          defaultModelsExpandDepth: 1,
+          defaultModelRendering: "example",
+          tryItOutEnabled: true,
+          displayRequestDuration: true,
+          presets: [SwaggerUIBundle.presets.apis],
+        });
+      };
+    </script>
+  </body>
+</html>
