@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  async rewrites() {
+    // Serves the Swagger UI reference at a clean /api-docs path.
+    return [{ source: "/api-docs", destination: "/api-docs.html" }];
+  },
 };
 
 export default nextConfig;

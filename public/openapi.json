@@ -1,0 +1,191 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Opsolace Contact API",
+    "version": "1.0.0",
+    "description": "Endpoint behind the Opsolace homepage contact form. Validates an enquiry, screens for bots, then delivers it by email through Resend.\n\n**Honeypot:** the form must render a hidden field named `company`, submitted empty. If it arrives filled, the request returns `200 {\"ok\": true}` and **nothing is sent** — so a successful response does not always mean an email went out. This is deliberate: a bot that receives an error learns how to get past it.\n\n**Rate limit:** 5 requests per IP per 10 minutes. Exceeding it returns `429` with a `Retry-After` header. The counter is held in server memory, so on a serverless host each instance counts separately and the effective limit is looser."
+  },
+  "servers": [{ "url": "/", "description": "Same origin as this page" }],
+  "tags": [{ "name": "Contact", "description": "Homepage enquiry form" }],
+  "paths": {
+    "/api/contact": {
+      "post": {
+        "tags": ["Contact"],
+        "summary": "Submit a contact enquiry",
+        "operationId": "submitContact",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ContactRequest" },
+              "examples": {
+                "valid": {
+                  "summary": "A normal enquiry",
+                  "value": {
+                    "name": "Ada Lovelace",
+                    "email": "ada@example.com",
+                    "message": "We need help untangling our operations workflows.",
+                    "company": ""
+                  }
+                },
+                "invalid": {
+                  "summary": "Trips every validation rule",
+                  "value": { "name": "A", "email": "nope", "message": "hi", "company": "" }
+                },
+                "bot": {
+                  "summary": "Honeypot filled - accepted, but nothing is sent",
+                  "value": {
+                    "name": "Bot Name",
+                    "email": "bot@spam.example",
+                    "message": "buy cheap things right now",
+                    "company": "spamco"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Accepted. Delivered, unless the honeypot was filled.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SuccessResponse" },
+                "example": { "ok": true }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed, or the body was not valid JSON.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "examples": {
+                  "validation_error": {
+                    "summary": "Per-field errors, keyed by input name",
+                    "value": {
+                      "ok": false,
+                      "error": "validation_error",
+                      "message": "Please check the highlighted fields.",
+                      "fields": {
+                        "name": "Please tell us your name.",
+                        "email": "That email address doesn't look right.",
+                        "message": "Please add a little more detail."
+                      }
+                    }
+                  },
+                  "invalid_json": {
+                    "summary": "Body was not parseable JSON",
+                    "value": { "ok": false, "error": "invalid_json", "message": "Expected a JSON body." }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded for this IP.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds until the window resets.",
+                "schema": { "type": "integer", "example": 587 }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "example": {
+                  "ok": false,
+                  "error": "rate_limited",
+                  "message": "Too many enquiries from this address. Please try again shortly."
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "The email provider rejected the send, or the server is missing its email configuration. The underlying reason is logged server-side only.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "example": {
+                  "ok": false,
+                  "error": "delivery_failed",
+                  "message": "We couldn't send that just now. Please try again or email us directly."
+                }
+              }
+            }
+          },
+          "405": { "description": "Method not allowed. Only POST is supported." }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ContactRequest": {
+        "type": "object",
+        "required": ["name", "email", "message"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100,
+            "description": "Measured after trimming.",
+            "example": "Ada Lovelace"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254,
+            "description": "Used as the Reply-To on the delivered email.",
+            "example": "ada@example.com"
+          },
+          "message": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 5000,
+            "description": "Measured after trimming.",
+            "example": "We need help untangling our operations workflows."
+          },
+          "company": {
+            "type": "string",
+            "description": "Honeypot. Render it hidden and submit it empty. Any non-empty value causes the request to be silently discarded.",
+            "example": ""
+          }
+        }
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "required": ["ok"],
+        "properties": { "ok": { "type": "boolean", "const": true } }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["ok", "error", "message"],
+        "properties": {
+          "ok": { "type": "boolean", "const": false },
+          "error": {
+            "type": "string",
+            "enum": ["invalid_json", "validation_error", "rate_limited", "delivery_failed", "server_error"]
+          },
+          "message": {
+            "type": "string",
+            "description": "Safe to display to a visitor. Provider details are never included."
+          },
+          "fields": {
+            "$ref": "#/components/schemas/FieldErrors",
+            "description": "Present on validation_error only."
+          }
+        }
+      },
+      "FieldErrors": {
+        "type": "object",
+        "description": "Keyed by input name so each error renders against its own input.",
+        "properties": {
+          "name": { "type": "string" },
+          "email": { "type": "string" },
+          "message": { "type": "string" }
+        }
+      }
+    }
+  }
+}
