@@ -4,7 +4,18 @@ import { checkRateLimit, clientIpFrom } from "@/lib/rate-limit";
 import { sendEnquiry } from "@/lib/send-enquiry";
 import type { ContactResponse } from "@/types/contact";
 
-const RATE_LIMIT = { limit: 5, windowMs: 10 * 60 * 1000 };
+/** Reads a positive integer env var, falling back when unset or malformed. */
+function intEnv(name: string, fallback: number): number {
+  const parsed = Number(process.env[name]?.trim());
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+// Defaults suit production. Raise CONTACT_RATE_LIMIT in a preview environment
+// to test without waiting out the window.
+const RATE_LIMIT = {
+  limit: intEnv("CONTACT_RATE_LIMIT", 5),
+  windowMs: intEnv("CONTACT_RATE_WINDOW_MS", 10 * 60 * 1000),
+};
 
 function json(body: ContactResponse, status: number, headers?: HeadersInit) {
   return Response.json(body, { status, headers });
