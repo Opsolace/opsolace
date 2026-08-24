@@ -121,9 +121,15 @@ server-side only.
 A submission with the honeypot filled returns `200 { "ok": true }` without sending anything, so
 a bot cannot learn it was caught.
 
-Requests are limited to 5 per IP per 10 minutes. The counter lives in server memory, so on a
-serverless host each instance counts separately and the real limit is looser. That is enough
-for drive-by spam; swap in a shared store (Upstash, Redis) if it needs to be a guarantee.
+Requests are limited to 5 per IP per 10 minutes. Override with `CONTACT_RATE_LIMIT` and
+`CONTACT_RATE_WINDOW_MS` - useful in a preview environment where you are testing repeatedly and
+do not want to wait out the window. The counter lives in server memory, so on a serverless host
+each instance counts separately and the real limit is looser. That is enough for drive-by spam;
+swap in a shared store (Upstash, Redis) if it needs to be a guarantee.
+
+When testing, leave `company` out of the request entirely. It is the honeypot: any non-empty
+value returns `200 {"ok": true}` while discarding the enquiry, which looks like success but
+sends no email.
 
 ### Interactive reference (Swagger)
 

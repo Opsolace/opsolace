@@ -3,43 +3,61 @@
   "info": {
     "title": "Opsolace Contact API",
     "version": "1.0.0",
-    "description": "Endpoint behind the Opsolace homepage contact form. Validates an enquiry, screens for bots, then delivers it by email through Resend.\n\n**Honeypot:** the form must render a hidden field named `company`, submitted empty. If it arrives filled, the request returns `200 {\"ok\": true}` and **nothing is sent** — so a successful response does not always mean an email went out. This is deliberate: a bot that receives an error learns how to get past it.\n\n**Rate limit:** 5 requests per IP per 10 minutes. Exceeding it returns `429` with a `Retry-After` header. The counter is held in server memory, so on a serverless host each instance counts separately and the effective limit is looser."
+    "description": "Endpoint behind the Opsolace homepage contact form. Validates an enquiry, screens for bots, then delivers it by email through Resend.\n\n**Honeypot:** the form must render a hidden field named `company`, submitted empty. If it arrives filled, the request returns `200 {\"ok\": true}` and **nothing is sent** — so a successful response does not always mean an email went out. This is deliberate: a bot that receives an error learns how to get past it.\n\n**Rate limit:** 5 requests per IP per 10 minutes by default, configurable with `CONTACT_RATE_LIMIT` and `CONTACT_RATE_WINDOW_MS`. Exceeding it returns `429` with a `Retry-After` header. The counter is held in server memory, so on a serverless host each instance counts separately and the effective limit is looser."
   },
-  "servers": [{ "url": "/", "description": "Same origin as this page" }],
-  "tags": [{ "name": "Contact", "description": "Homepage enquiry form" }],
+  "servers": [
+    {
+      "url": "/",
+      "description": "Same origin as this page"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Contact",
+      "description": "Homepage enquiry form"
+    }
+  ],
   "paths": {
     "/api/contact": {
       "post": {
-        "tags": ["Contact"],
+        "tags": [
+          "Contact"
+        ],
         "summary": "Submit a contact enquiry",
         "operationId": "submitContact",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/ContactRequest" },
+              "schema": {
+                "$ref": "#/components/schemas/ContactRequest"
+              },
               "examples": {
                 "valid": {
                   "summary": "A normal enquiry",
                   "value": {
                     "name": "Ada Lovelace",
                     "email": "ada@example.com",
-                    "message": "We need help untangling our operations workflows.",
-                    "company": ""
+                    "message": "We need help untangling our operations workflows."
                   }
                 },
                 "invalid": {
                   "summary": "Trips every validation rule",
-                  "value": { "name": "A", "email": "nope", "message": "hi", "company": "" }
+                  "value": {
+                    "name": "A",
+                    "email": "nope",
+                    "message": "hi"
+                  }
                 },
                 "bot": {
-                  "summary": "Honeypot filled - accepted, but nothing is sent",
+                  "summary": "DO NOT USE TO TEST DELIVERY - honeypot filled, returns 200 and sends NOTHING",
                   "value": {
                     "name": "Bot Name",
                     "email": "bot@spam.example",
                     "message": "buy cheap things right now",
                     "company": "spamco"
-                  }
+                  },
+                  "description": "Demonstrates the bot trap only. `company` is a honeypot: any non-empty value makes the endpoint return `200 {\"ok\": true}` while discarding the enquiry. Use the `valid` example to test real delivery."
                 }
               }
             }
@@ -50,8 +68,12 @@
             "description": "Accepted. Delivered, unless the honeypot was filled.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/SuccessResponse" },
-                "example": { "ok": true }
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "ok": true
+                }
               }
             }
           },
@@ -59,7 +81,9 @@
             "description": "Validation failed, or the body was not valid JSON.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
                 "examples": {
                   "validation_error": {
                     "summary": "Per-field errors, keyed by input name",
@@ -76,7 +100,11 @@
                   },
                   "invalid_json": {
                     "summary": "Body was not parseable JSON",
-                    "value": { "ok": false, "error": "invalid_json", "message": "Expected a JSON body." }
+                    "value": {
+                      "ok": false,
+                      "error": "invalid_json",
+                      "message": "Expected a JSON body."
+                    }
                   }
                 }
               }
@@ -87,12 +115,17 @@
             "headers": {
               "Retry-After": {
                 "description": "Seconds until the window resets.",
-                "schema": { "type": "integer", "example": 587 }
+                "schema": {
+                  "type": "integer",
+                  "example": 587
+                }
               }
             },
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
                 "example": {
                   "ok": false,
                   "error": "rate_limited",
@@ -105,7 +138,9 @@
             "description": "The email provider rejected the send, or the server is missing its email configuration. The underlying reason is logged server-side only.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
                 "example": {
                   "ok": false,
                   "error": "delivery_failed",
@@ -114,7 +149,9 @@
               }
             }
           },
-          "405": { "description": "Method not allowed. Only POST is supported." }
+          "405": {
+            "description": "Method not allowed. Only POST is supported."
+          }
         }
       }
     }
@@ -123,7 +160,11 @@
     "schemas": {
       "ContactRequest": {
         "type": "object",
-        "required": ["name", "email", "message"],
+        "required": [
+          "name",
+          "email",
+          "message"
+        ],
         "properties": {
           "name": {
             "type": "string",
@@ -148,24 +189,44 @@
           },
           "company": {
             "type": "string",
-            "description": "Honeypot. Render it hidden and submit it empty. Any non-empty value causes the request to be silently discarded.",
+            "description": "HONEYPOT - leave empty. Render it hidden in the real form and submit it empty. Any non-empty value makes the endpoint return 200 while silently discarding the enquiry, so a filled value produces a success response with no email sent. Omit this field entirely when testing.",
             "example": ""
           }
         }
       },
       "SuccessResponse": {
         "type": "object",
-        "required": ["ok"],
-        "properties": { "ok": { "type": "boolean", "const": true } }
+        "required": [
+          "ok"
+        ],
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "const": true
+          }
+        }
       },
       "ErrorResponse": {
         "type": "object",
-        "required": ["ok", "error", "message"],
+        "required": [
+          "ok",
+          "error",
+          "message"
+        ],
         "properties": {
-          "ok": { "type": "boolean", "const": false },
+          "ok": {
+            "type": "boolean",
+            "const": false
+          },
           "error": {
             "type": "string",
-            "enum": ["invalid_json", "validation_error", "rate_limited", "delivery_failed", "server_error"]
+            "enum": [
+              "invalid_json",
+              "validation_error",
+              "rate_limited",
+              "delivery_failed",
+              "server_error"
+            ]
           },
           "message": {
             "type": "string",
@@ -181,9 +242,15 @@
         "type": "object",
         "description": "Keyed by input name so each error renders against its own input.",
         "properties": {
-          "name": { "type": "string" },
-          "email": { "type": "string" },
-          "message": { "type": "string" }
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
         }
       }
     }
