@@ -167,7 +167,12 @@ delivery_failed` and logs the reason:
 
 Until the sending domain is verified, `Opsolace <onboarding@resend.dev>` works as
 `CONTACT_FROM_EMAIL` for testing. These must also be set on the deployment host - `.env.local`
-is not deployed.
+is not deployed, and env changes on most hosts only take effect on the next deploy.
+
+`CONTACT_FROM_EMAIL` takes either `email@example.com` or `Name <email@example.com>`. Surrounding
+quotes and stray whitespace are stripped before use, so a value pasted into a host dashboard as
+`"Opsolace <hello@opsolace.com>"` behaves the same as the unquoted form. A `.env` file strips
+quotes itself; dashboard fields do not, and the provider rejects the quoted address.
 
 Useful checks:
 

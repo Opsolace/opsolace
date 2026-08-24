@@ -17,10 +17,24 @@ function singleLine(value: string): string {
   return value.replace(/[\r\n]+/g, " ").trim();
 }
 
+/**
+ * Reads an env var the way a .env file would.
+ *
+ * Dashboard fields (Vercel, Railway) store what you type verbatim, so a value
+ * pasted as `"Opsolace <hi@example.com>"` keeps its quotes and the provider
+ * rejects the send - while the same text in .env.local works, because dotenv
+ * strips them. Normalising here makes both sources behave identically.
+ */
+function readEnv(name: string): string | undefined {
+  const raw = process.env[name]?.trim();
+  if (!raw) return undefined;
+  return raw.replace(/^(["'])([\s\S]*)\1$/, "$2").trim() || undefined;
+}
+
 export async function sendEnquiry({ name, email, message }: ContactPayload) {
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.CONTACT_FROM_EMAIL;
-  const to = process.env.CONTACT_TO_EMAIL;
+  const apiKey = readEnv("RESEND_API_KEY");
+  const from = readEnv("CONTACT_FROM_EMAIL");
+  const to = readEnv("CONTACT_TO_EMAIL");
 
   if (!apiKey || !from || !to) {
     throw new Error(
