@@ -17,11 +17,6 @@ export type ContactResponse =
   | { ok: true }
   | { ok: false; error: ContactErrorCode; message: string; fields?: FieldErrors };
 
-export interface ApiResponse {
-  ok: boolean;
-  error?: string;
-}
-
 export interface FormStatus {
   type: "success" | "error" | null;
   message: string;
