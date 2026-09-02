@@ -7,7 +7,6 @@ import { FormStatus } from "@/types/contact";
 import { StatusBanner } from "./form-status";
 import { TextAreaInput, TextInput } from "./form-field";
 
-
 export function ContactForm() {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<FormStatus>({ type: null, message: "" });
