@@ -8,7 +8,7 @@ export const services: readonly Service[] = [
   { icon: Settings2, number: "04", title: "Operations improvement", text: "Find bottlenecks, simplify processes, and improve how work moves through the business." },
 ];
 
-export const problemPoints = ["Spreadsheets that run the business", "Tools that don't talk to each other", "Processes that live in people's heads", "Follow-ups that never seem to end"] as const;
+export const problemPoints = ["Copying information between spreadsheets and tools", "Preparing reports, invoices, and updates by hand", "Chasing approvals, reminders, and follow-ups", "Repeating work that still needs a human eye"] as const;
 export const beforeItems: readonly CompareItem[] = [
   { label: "Manual processes", icon: Repeat2 },
   { label: "Scattered information", icon: AlertCircle },
@@ -30,4 +30,4 @@ export const processSteps: readonly ProcessStep[] = [
   { number: "04", title: "Improve", text: "We refine the system as your business grows." },
 ];
 export const exploreLinks: readonly FooterLink[] = [{ label: "What we do", href: "#services" }, { label: "How we work", href: "#process" }, { label: "About", href: "#about" }];
-export const principles: readonly Principle[] = [{ label: "Less friction", icon: Workflow }, { label: "More clarity", icon: Eye }, { label: "Better work", icon: CheckCircle2 }];
+export const principles: readonly Principle[] = [{ label: "Less admin", icon: Workflow }, { label: "More clarity", icon: Eye }, { label: "Human in control", icon: CheckCircle2 }];

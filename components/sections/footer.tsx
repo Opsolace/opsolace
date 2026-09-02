@@ -46,7 +46,7 @@ export function SiteFooter() {
         </div>
       </div>
       </div>
-      <div className="flex w-full justify-between self-end border-t border-line pt-5 text-[11px] text-[#87918d]">
+      <div className="flex w-full flex-col gap-2 self-end border-t border-line pt-5 text-[11px] text-[#87918d] sm:flex-row sm:justify-between sm:gap-0">
         <span>© 2026 Opsolace</span>
         <span>Operations, at ease.</span>
       </div>

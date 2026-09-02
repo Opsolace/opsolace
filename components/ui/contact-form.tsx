@@ -84,7 +84,7 @@ export function ContactForm() {
       </div>
 
       <button
-        className="group mt-3 inline-flex w-max items-center gap-3 border border-navy bg-navy px-5 py-4 text-[13px] font-semibold text-white transition-colors hover:border-white hover:bg-white hover:text-navy cursor-pointer disabled:cursor-not-allowed disabled:opacity-70"
+        className="group mt-3 inline-flex w-full items-center justify-center gap-3 border border-navy bg-navy px-5 py-4 text-[13px] font-semibold text-white transition-colors hover:border-white hover:bg-white hover:text-navy cursor-pointer disabled:cursor-not-allowed disabled:opacity-70 sm:w-max"
         type="submit"
         disabled={loading}
       >

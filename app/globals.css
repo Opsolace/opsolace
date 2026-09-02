@@ -30,7 +30,9 @@ html {
 }
 body {
   margin: 0;
-  background: var(--paper);
+  background-color: var(--paper);
+  background-image: linear-gradient(rgb(31 41 73 / 2%) 1px, transparent 1px), linear-gradient(90deg, rgb(31 41 73 / 2%) 1px, transparent 1px);
+  background-size: 48px 48px;
   color: var(--navy);
   font-family: var(--font-geist-sans), sans-serif;
   font-feature-settings: "kern" 1, "liga" 1;
@@ -90,7 +92,13 @@ button:focus-visible {
 }
 em {
   color: var(--emerald);
+  font-family: Georgia, "Times New Roman", serif;
   font-style: normal;
+  font-weight: 400;
+}
+::selection {
+  background: var(--emerald);
+  color: var(--navy);
 }
 .scroll-reveal {
   opacity: 0;

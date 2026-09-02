@@ -28,7 +28,6 @@ The homepage is composed in `app/page.tsx` from independent section components:
 - `ServicesSection` - presents operational systems, workflow automation, custom software, and operations improvement.
 - `TransformationSection` - compares operational friction before Opsolace with the clearer state after.
 - `ProcessSection` - explains the Understand, Untangle, Build, and Improve process.
-- `StatementSection` - creates an emotional brand pause around lighter work.
 - `FinalCtaSection` - presents the contact form and starts an enquiry.
 - `SiteFooter` - provides navigation, contact details, and brand closure.
 

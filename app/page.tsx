@@ -6,7 +6,6 @@ import { StorySection } from "@/components/sections/story";
 import { ServicesSection } from "@/components/sections/services";
 import { TransformationSection } from "@/components/sections/transformation";
 import { ProcessSection } from "@/components/sections/process";
-import { StatementSection } from "@/components/sections/statement";
 import { FinalCtaSection } from "@/components/sections/final-cta";
 import { SiteFooter } from "@/components/sections/footer";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
@@ -22,7 +21,6 @@ export default function Home() {
       <ScrollReveal delay={60}><ServicesSection /></ScrollReveal>
       <ScrollReveal delay={80}><TransformationSection /></ScrollReveal>
       <ScrollReveal delay={60}><ProcessSection /></ScrollReveal>
-      <ScrollReveal delay={80}><StatementSection /></ScrollReveal>
       <ScrollReveal delay={80}><FinalCtaSection /></ScrollReveal>
       <ScrollReveal delay={60}><SiteFooter /></ScrollReveal>
     </main>
